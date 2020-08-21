@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TimerController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Temps de travaille du projet</h1>
+    <ul>
+        <li>temps globale du {{ project.name }} : {{ projectTime }} [JOUR:HEUR:MINUTE:SECONDE]</li>
+        <li>temps passé par la {{ team.name }} sur le {{ project.name }}: {{ projectTeamTime }} [JOUR:HEUR:MINUTE:SECONDE]</li>
+        <li>temps passé par {{ user.firstName }} {{ user.lastName }} sur le {{ project.name }}: {{ projectUserTime }} [JOUR:HEUR:MINUTE:SECONDE]</li>
+    </ul>
+    <a href="{{ path('timer-start',{idTeam: team.id, idProject: project.id}) }}">Démarrer un nouveau timer</a>
+</div>
+{% endblock %}
