@@ -50,11 +50,9 @@ class TeamController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $curentUser = $this->getUser(); 
-            $curentUserId = $curentUser->getId();
-            $team->setTeamAdmin($curentUserId);
-            $team->addUser($curentUser);
-            dump($team);
+            $team->setTeamAdmin($this->getUser()->getId());
+            $team->addUser($this->getUser());
+            dump($team); 
 
             $entityManager->persist($team);
             $entityManager->flush();
