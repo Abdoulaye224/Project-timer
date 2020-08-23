@@ -52,7 +52,7 @@ class TeamController extends AbstractController
 
             $team->setTeamAdmin($this->getUser()->getId());
             $team->addUser($this->getUser());
-            dump($team);
+            dump($team); 
 
             $entityManager->persist($team);
             $entityManager->flush();
