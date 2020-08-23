@@ -102,7 +102,7 @@ class UserController extends AbstractController
         foreach($groups as $group){
             if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) > 1 ){
                 $group->removeUser($user);
-                $group->setTeamAdmin($group->getUsers()[0]->getId());
+                $group->setTeamAdmin($group->getUsers()[2]->getId());
                 $entityManager->persist($group);
             }
             if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ){
