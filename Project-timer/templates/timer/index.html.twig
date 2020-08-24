@@ -11,9 +11,9 @@
 <div class="example-wrapper">
     <h1>Temps de travaille du projet</h1>
     <ul>
-        <li>temps globale du {{ project.name }} : {{ projectTime }} [JOUR:HEUR:MINUTE:SECONDE]</li>
-        <li>temps passé par la {{ team.name }} sur le {{ project.name }}: {{ projectTeamTime }} [JOUR:HEUR:MINUTE:SECONDE]</li>
-        <li>temps passé par {{ user.firstName }} {{ user.lastName }} sur le {{ project.name }}: {{ projectUserTime }} [JOUR:HEUR:MINUTE:SECONDE]</li>
+        <li>temps globale du {{ project.name }} : {{ projectTime.jour }}:{{ projectTime.heur }}:{{ projectTime.minute }}:{{ projectTime.seconde }} [JOUR:HEUR:MINUTE:SECONDE]</li>
+        <li>temps passé par la {{ team.name }} sur le {{ project.name }}: {{ projectTeamTime.jour }}:{{ projectTeamTime.heur }}:{{ projectTeamTime.minute }}:{{ projectTeamTime.seconde }}[JOUR:HEUR:MINUTE:SECONDE]</li>
+        <li>temps passé par {{ user.firstName }} {{ user.lastName }} sur le {{ project.name }}: {{ projectUserTime.jour }}:{{ projectUserTime.heur }}:{{ projectUserTime.minute }}:{{ projectUserTime.seconde }} [JOUR:HEUR:MINUTE:SECONDE]</li>
     </ul>
     <a href="{{ path('timer-start',{idTeam: team.id, idProject: project.id}) }}">Démarrer un nouveau timer</a>
 </div>
