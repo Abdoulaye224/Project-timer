@@ -1,3 +1,11 @@
+/*GENERAL*/
+
+td{
+    vertical-align: middle;
+}
+
+/********/
+
 /*NAVBAR*/
 
 .navbar {
@@ -138,6 +146,42 @@ font-family: 'Lato', sans-serif;
 
 
 /*******/
+
+/*TIMER*/
+
+.timer{
+    font-size: 100px;
+    border: solid #707070	 5px;
+    border-radius: 5px;
+    background-color: #F0F0F0;
+    width: 60%;
+    margin: auto;
+    text-align: center;
+}
+
+.start{
+    margin: auto;
+    text-align: center;
+}
+
+.btn-start{
+    font-size: 30px;
+    width: 50%;
+}
+
+.stop{
+    margin: auto;
+    text-align: center;
+}
+
+.btn-stop{
+    font-size: 30px;
+    width: 20%;
+}
+
+/******/
+
+
 
 
 /*CHECKBOX*/
