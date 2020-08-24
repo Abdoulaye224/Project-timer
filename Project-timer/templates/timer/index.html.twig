@@ -1,15 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello TimerController!{% endblock %}
+{% block title %}Start Timer{% endblock %}
+
+{% block head %} {% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    {% include 'layout/navbar.html.twig'%}
 
+<!--
 <div class="example-wrapper">
-    <h1>Temps de travaille du projet</h1>
     <ul>
         <li>temps globale du {{ project.name }} : {{ projectTime.jour }}:{{ projectTime.heur }}:{{ projectTime.minute }}:{{ projectTime.seconde }} [JOUR:HEUR:MINUTE:SECONDE]</li>
         <li>temps passé par la {{ team.name }} sur le {{ project.name }}: {{ projectTeamTime.jour }}:{{ projectTeamTime.heur }}:{{ projectTeamTime.minute }}:{{ projectTeamTime.seconde }}[JOUR:HEUR:MINUTE:SECONDE]</li>
@@ -17,4 +16,35 @@
     </ul>
     <a href="{{ path('timer-start',{idTeam: team.id, idProject: project.id}) }}">Démarrer un nouveau timer</a>
 </div>
+-->
+
+<div class = "container">
+
+    <table class = "table table-bordered" style = "text-align:center; margin-top:100px;">
+        <thead class="thead-dark">
+            <tr>
+                <th colspan="2" style="font-size: 20px;">Récapitulatif du temps passé sur le projet "{{ project.name }}"</th>
+            </tr>
+            <tr>
+                <td>Votre temps passé sur le projet</td>
+                <td> {{ projectUserTime }} </td>
+            </tr>
+            <tr>
+                <td>Temps passé par le groupe {{ team.name }}</td>
+                <td> {{ projectTeamTime }} </td>
+            </tr>
+            <tr style="background-color: yellow;">
+                <td><strong>Temps Global</strong></td>
+                <td><strong>{{ projectTime }}</strong></td>
+            </tr>
+    </table>
+    <br>
+    <div class="start">
+        <a href="{{ path('timer-start',{idTeam: team.id, idProject: project.id}) }}" class="btn btn-success btn-start">
+            <i class="fa fa-play" aria-hidden="true"></i>  Démarrer un nouveau timer
+        </a>
+    </div>
+
+</div>
+   
 {% endblock %}
