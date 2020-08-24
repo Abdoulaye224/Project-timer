@@ -31,7 +31,7 @@ You will need to install docker and Makefile.
 
 ### Others
 ***
-####If you need to access the database
+#### If you need to access the database
 
 ```
 docker-compose exec web php bin/console app:create-admin-user <email> <password> <prenom> <nom> 
