@@ -18,7 +18,7 @@ You will need to install docker and Makefile.
 
 ### if you have a problem installing the Makefile on your device, you can follow these steps
 
-````
+```
 # Go to the root of the project and enter this command to start the application:
   docker-compose up --build
 
@@ -27,7 +27,7 @@ You will need to install docker and Makefile.
 
 # Here is the command to execute to create false data (Data Fixtures) in order to be able to test the application
   docker-compose exec web php bin/console doctrine:fixtures:load
-````
+```
 
 ### Others
 ***
@@ -41,22 +41,22 @@ docker-compose exec web php bin/console app:create-admin-user <email> <password>
 ***
 
 * For start application
-````
+```
     $ make start
-````
+```
 * For stop application
-````
+```
     $ make stop    
-````
+```
 
 * For load différents entity to database
-````     
+```   
     $ make migrations 
-````
+```
 * For generate a data fixtures for your tests
-````
+```
     $ make fixtures 
-````
+```
 
 ## Contributing
 We encourage you to contribute to Project-timer! Please check out the
