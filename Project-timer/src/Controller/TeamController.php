@@ -56,7 +56,7 @@ class TeamController extends AbstractController
 
             $entityManager->persist($team);
             $entityManager->flush();
-            $this->addFlash('success', "The user has been created");
+            $this->addFlash('success', "L'équipe a bien été créer !");
 
             return $this->redirectToRoute('team');
 
@@ -88,7 +88,7 @@ class TeamController extends AbstractController
 
             $entityManager->persist($team);
             $entityManager->flush();
-            $this->addFlash('success', "The user has been updated");
+            $this->addFlash('success', "L'équipe a bien été modifier !");
 
             return $this->redirectToRoute('team');
 

@@ -87,7 +87,7 @@ class UserController extends AbstractController
         $user = $this->userRepository->find($id);
         $entityManager->remove($user);
         $entityManager->flush();
-        $this->addFlash('danger', "Votre compte a bien été supprimé");
+        $this->addFlash('danger', "Votre compte a bien été supprimer !");
 
         return $this->redirectToRoute('user_list');
     }
@@ -113,7 +113,7 @@ class UserController extends AbstractController
         $entityManager->remove($user);
         $entityManager->flush();
 
-        $this->addFlash('danger', "Votre compte a bien été supprimé");
+        $this->addFlash('danger', "Votre compte a bien été supprimer !");
 
         return $this->redirectToRoute('home');
     }

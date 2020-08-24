@@ -45,7 +45,7 @@ class HomeController extends AbstractController
 
                 $entityManager->flush();
                 //$request->getSession()->getFlashBag()->add();
-                $this->addFlash('success', "votre compte a été crée, veuillez vous connecter");
+                $this->addFlash('success', "Votre compte a été créer, vous pouvez vous connecter !");
 
             }
             return $this->render('home/index.html.twig', [

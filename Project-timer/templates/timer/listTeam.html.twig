@@ -7,13 +7,13 @@
     {% include 'layout/navbar.html.twig'%}
 
     <div class="container">
-    <h1 style="margin-top: 20px; text-align: center;">Dans quel groupe voulez vous travaillez ?</h1>
+        <h1 style="margin-top: 20px; text-align: center;">Dans quel groupe voulez vous travaillez ?</h1>
         <table class="table table-bordered" style="text-align: center; margin-top: 30px;">
             <thead class="thead-dark">
-            <tr>
-                <th> Nom </th>
-                <th> Travailler </th>
-            </tr>
+                <tr>
+                    <th> Nom </th>
+                    <th> Travailler </th>
+                </tr>
             {% for team in tArray %}
                 <tr>
                     <td style="vertical-align: middle;"> {{ team.name }} </td>
@@ -23,7 +23,6 @@
                 </tr>
             {% endfor %}
             </thead>
-
         </table>
     </div>
 {% endblock %}
