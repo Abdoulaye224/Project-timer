@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Project;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Form\UserType;
@@ -99,7 +100,9 @@ class UserController extends AbstractController
     public function delete(user $user, EntityManagerInterface $entityManager)
     {
         $groups =  $this->entityManager->getRepository(Team::class)->findAll();
-        foreach($groups as $group){
+        $projects =  $this->entityManager->getRepository(Project::class)->findAll();
+
+        /*foreach($groups as $group){
             if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) > 1 ){
                 $group->removeUser($user);
                 $group->setTeamAdmin($group->getUsers()[2]->getId());
@@ -107,6 +110,36 @@ class UserController extends AbstractController
             }
             if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ){
                 $entityManager->remove($group);
+            }
+        }*/
+
+        foreach($projects as $project){
+            if($user->getId() == $project->getProjectAdmin() && count($project->getTeam()) > 1 ){
+                foreach($groups as $group){
+                    if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) > 1 ){
+                        $group->removeUser($user);
+                        $group->setTeamAdmin($group->getUsers()[1]->getId());
+                        $entityManager->persist($group);
+                    }
+                }
+                if (count($project->getTeam()) > 0 ){
+                    foreach($project->getTeam() as $projectTeam){
+                        $project->setProjectAdmin($projectTeam->getUsers()[1]->getId());
+                    }
+                } else if (count($project->getTeam()) == 0 ){
+                    $project->setProjectAdmin($project->getTeam()[0]->getUsers()[1]->getId());
+                }
+                $entityManager->persist($project);
+            }
+            if($user->getId() == $project->getProjectAdmin() && count($project->getTeam()) <= 1 ){
+                if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ){
+                    foreach($groups as $group){
+                        if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ){
+                            $entityManager->remove($group);
+                        }
+                    }
+                    $entityManager->remove($project);
+                }
             }
         }
 
