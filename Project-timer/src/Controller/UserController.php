@@ -114,33 +114,41 @@ class UserController extends AbstractController
         }*/
 
         foreach($projects as $project){
+            foreach($groups as $group){
+                if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ) {
+                    $entityManager->remove($group);
+                }
+            }
             if($user->getId() == $project->getProjectAdmin() && count($project->getTeam()) > 1 ){
                 foreach($groups as $group){
                     if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) > 1 ){
                         $group->removeUser($user);
-                        $group->setTeamAdmin($group->getUsers()[1]->getId());
+                        if ($group->getUsers()[1] != null)
+                            $group->setTeamAdmin($group->getUsers()[1]->getId());
+                        else
+                            $group->setTeamAdmin($group->getUsers()[0]->getId());
                         $entityManager->persist($group);
                     }
                 }
-                if (count($project->getTeam()) > 0 ){
-                    foreach($project->getTeam() as $projectTeam){
+                foreach($project->getTeam() as $projectTeam){
+                    if ($projectTeam->getUsers()[1] != null){
                         $project->setProjectAdmin($projectTeam->getUsers()[1]->getId());
+                    } else {
+                        $project->setProjectAdmin($projectTeam->getUsers()[0]->getId());
                     }
-                } else if (count($project->getTeam()) == 0 ){
+                }
+
+            }
+
+            if($user->getId() == $project->getProjectAdmin() && count($project->getTeam()) == 1 ){
+                if ($project->getTeam()[0]->getUsers()[1] != null){
                     $project->setProjectAdmin($project->getTeam()[0]->getUsers()[1]->getId());
+                } else {
+                    $project->setProjectAdmin($project->getTeam()[0]->getUsers()[0]->getId());
                 }
-                $entityManager->persist($project);
+                /*$entityManager->remove($project);*/
             }
-            if($user->getId() == $project->getProjectAdmin() && count($project->getTeam()) <= 1 ){
-                foreach($groups as $group){
-                    if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ) {
-                        if ($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1) {
-                            $entityManager->remove($group);
-                        }
-                    }
-                }
-                $entityManager->remove($project);
-            }
+            $entityManager->persist($project);
         }
 
         $entityManager->remove($user);
