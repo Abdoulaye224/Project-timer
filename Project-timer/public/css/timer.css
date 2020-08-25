@@ -10,7 +10,6 @@ td{
 
 .navbar {
     background-color: #292929;
-    height: 50px;
 }
 
 nav a {
@@ -32,6 +31,23 @@ nav a {
     margin-right: 20px;
 }
 
+.navbar-toggler{
+    background-color: white;
+}
+
+.tog{
+    background-color: black;
+    width: 30px;
+    height: 3px;
+}
+
+.espace{
+    margin-top: 5px;
+}
+
+.connexion-two{
+    display: none;
+}
 /********/
 
 
@@ -189,6 +205,37 @@ font-family: 'Lato', sans-serif;
 [type="checkbox"]{
     margin-left: 20px;
     margin-right: 2px;
+}
+
+/*******/
+
+
+/*RESPONSIVE*/
+
+@media screen and (max-width: 992px) {
+
+    .menu{
+        margin-top: 10px;
+    }
+    .connexion-two{
+        display: block;
+    }
+    .connexion-one{
+        display: none;
+    }
+
+    #general{
+        flex-direction: column;
+    }
+
+    .sign-up{
+        margin-right: 0px;
+        margin-bottom:20px;
+    }
+    .sign-in{
+        margin-left: 0px;
+    }
+
 }
 
 /*******/

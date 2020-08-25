@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User list{% endblock %}
+{% block title %}Liste des utilisateurs{% endblock %}
 {% block head %} {% endblock %}
 {% block body %}
    
@@ -8,24 +8,24 @@
 
     <div class="container">
         <div Class="row justify-content-center">
-    <h1 style="margin-top: 20px;">Liste des utilisateurs</h1>
+            <h1 style="margin-top: 20px;">Liste des utilisateurs</h1>
             <table class="table table-bordered" style="margin-top: 10px; text-align: center;">
                 <thead class="thead-dark">
-                <tr>
-                    <th> Prénom </th>
-                    <th> Nom </th>
-                    <th> Email </th>
-                </tr>
+                    <tr>
+                        <th> Prénom </th>
+                        <th> Nom </th>
+                        <th> Email </th>
+                    </tr>
                 </thead>
             {# légèrement différent de php avec foreach userList as user #}
             {% for user in user_list %}
-                <tr>
-                <td>{{ user.firstName }} </td>
-                <td>{{  user.lastName|upper }}</td>
-                <td>{{ user.email }}</td>
-                </tr>
+                    <tr>
+                        <td>{{ user.firstName }} </td>
+                        <td>{{  user.lastName|upper }}</td>
+                        <td>{{ user.email }}</td>
+                    </tr>
             {% endfor %}
             </table>
-    </div>
+        </div>
     </div>
 {% endblock %}

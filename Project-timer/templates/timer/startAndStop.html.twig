@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Start Timer{% endblock %}
+{% block title %}Chronométrez vous{% endblock %}
 
 {% block head %} {% endblock %}
 
@@ -19,6 +19,7 @@
             <a href="{{ path('timer_stop') }}" class="btn btn-danger btn-stop"><i class="fa fa-stop" aria-hidden="true"></i> Stop</a>
         </div>
     </main>
+
     <script>
         var timerDiv = document.getElementsByClassName('timer')[0],
             seconds = 0, minutes = 0, hours = 0,
@@ -39,9 +40,12 @@
 
             timer();
         }
+
         function timer() {
             t = setTimeout(add, 1000);
         }
+
         timer();
+        
     </script>
 {% endblock %}
