@@ -26,6 +26,10 @@ The following is a set of guidelines for contributing to Project Timer. Use your
 [Additional Notes](#additional-notes)
   * [Issue and Pull Request Labels](#issue-and-pull-request-labels)
 
+## Code of Conduct
+
+This project and everyone participating in it is governed by the [Project-timer Code of Conduct](CODE_OF_CONDUCT.md). 
+By participating, you are expected to uphold this code. Please report unacceptable behavior to [traoreabdoulaye097@gmail.com](mailto:traoreabdoulaye097@gmail.com).
 
 ## What should I know before I get started?
 
@@ -35,12 +39,6 @@ The following is a set of guidelines for contributing to Project Timer. Use your
 
 ### Project-timer Design Decisions
 ***
-
-
-## Code of Conduct
-
-This project and everyone participating in it is governed by the [Project-timer Code of Conduct](CODE_OF_CONDUCT.md). 
-By participating, you are expected to uphold this code. Please report unacceptable behavior to [traoreabdoulaye097@gmail.com](mailto:traoreabdoulaye097@gmail.com).
 
 ## How Can I Contribute ?
 
