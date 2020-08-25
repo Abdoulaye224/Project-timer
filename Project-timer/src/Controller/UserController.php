@@ -132,14 +132,14 @@ class UserController extends AbstractController
                 $entityManager->persist($project);
             }
             if($user->getId() == $project->getProjectAdmin() && count($project->getTeam()) <= 1 ){
-                if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ){
-                    foreach($groups as $group){
-                        if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ){
+                foreach($groups as $group){
+                    if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ) {
+                        if ($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1) {
                             $entityManager->remove($group);
                         }
                     }
-                    $entityManager->remove($project);
                 }
+                $entityManager->remove($project);
             }
         }
 
