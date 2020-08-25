@@ -35,7 +35,8 @@
                     </td>
                     <td style="vertical-align:middle;">
                         {% if team.getTeamAdmin == app.user.id %}
-                            <a href="{{ path('team_edit',{idTeam: team.id}) }}" class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                            <a title = "Modifier le groupe" href="{{ path('team_edit',{idTeam: team.id}) }}" class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                            <a title = "Supprimer le groupe" href="{{ path('team_delete',{idTeam: team.id}) }}" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
                         {% else %}
                             Impossible, vous n'êtes pas l'administateur du groupe.
                         {% endif %}
