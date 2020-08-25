@@ -1,6 +1,6 @@
 ## About the app
 project-timer is an application for managing the time spent by a user on a given project. This user can belong to one or more groups, and each group can have one or more different projects.
-We let you discover the application.  
+We let you discover the application. 
 
 ## Getting started
 
