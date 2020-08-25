@@ -33,30 +33,65 @@ class TimerController extends AbstractController
      */
     public function index($idTeam,$idProject)
     {
-        $projectList = $this->timerRepository->findBy(['project' => $idProject]);
-        $timeProject = $this->calcTime($projectList);
-
-        $projectTeamList = $this->timerRepository->findBy(['team' => $idTeam,'project' => $idProject]);
-        $timeTeamProject = $this->calcTime($projectTeamList);
+        $checkTeam = 0;
+        $currentUser = $this->getUser();
+        $currentTeam = $this->teamRepository->find(['id' => $idTeam]);
+        if($currentTeam != null){
+            $users = $currentTeam->getUsers();
+        }else{
+            $this->addFlash('alert', "groupe inexistant");
+            return $this->redirectToRoute('timer-team');
+        }
         
-        $curentUser = $this->getUser();
-        $curentUserId = $curentUser->getId();
-        $projectUserList = $this->timerRepository->findBy(['user' => $curentUserId,'project' => $idProject]);
-        $timeUserProject = $this->calcTime($projectUserList);
+        foreach ($users as $user){
+            if($currentUser->getId() == $user->getId()){
+                $checkTeam = true;
+            }
+        }
 
-        $curentProject =  $this->projectRepository->find($idProject);
-        $curentTeam = $this->teamRepository->find($idTeam);
+        $checkProject = 0;
+        $currentProject= $this->projectRepository->find(['id' => $idProject]);
+        if($currentProject != null){
+            $groups = $currentProject->getTeam();
+        }else{
+            $this->addFlash('alert', "projet inexistant");
+            return $this->redirectToRoute('timer-group', [
+                'idTeam' => $idTeam,
+            ]);
+        }
+        
+        foreach ($groups as $group){
+            if($currentProject->getId() == $group->getId()){
+                $checkProject = true;
+            }
+        }
 
-        return $this->render('timer/index.html.twig', [
-            'controller_name' => 'TimerController',
-            'projectList' => $projectList,
-            'projectTime' => $timeProject,
-            'projectTeamTime' => $timeTeamProject,
-            'projectUserTime' => $timeUserProject,
-            'project' => $curentProject,
-            'team' => $curentTeam,
-            'user' => $curentUser,
-        ]);
+        if($checkProject == true &&  $checkTeam == true && $currentUser != null){
+            $projectList = $this->timerRepository->findBy(['project' => $idProject]);
+            $timeProject = $this->calcTime($projectList);
+
+            $projectTeamList = $this->timerRepository->findBy(['team' => $idTeam,'project' => $idProject]);
+            $timeTeamProject = $this->calcTime($projectTeamList);
+            
+            $curentUser = $this->getUser();
+            $curentUserId = $curentUser->getId();
+            $projectUserList = $this->timerRepository->findBy(['user' => $curentUserId,'project' => $idProject]);
+            $timeUserProject = $this->calcTime($projectUserList);
+
+            $curentProject =  $this->projectRepository->find($idProject);
+            $curentTeam = $this->teamRepository->find($idTeam);
+
+            return $this->render('timer/index.html.twig', [
+                'controller_name' => 'TimerController',
+                'projectList' => $projectList,
+                'projectTime' => $timeProject,
+                'projectTeamTime' => $timeTeamProject,
+                'projectUserTime' => $timeUserProject,
+                'project' => $curentProject,
+                'team' => $curentTeam,
+                'user' => $curentUser,
+            ]);
+        }
     }
 
     public function calcTime($projectList)
@@ -73,9 +108,31 @@ class TimerController extends AbstractController
                 $fullInterval += $dateEndTimestamp - $dateStartTimestamp;
             }
         }
-        $timeProject = $date->setTimestamp($fullInterval)->format($dateTimeFormat);
 
-        return $timeProject;
+        $jour = 0;
+        $heur = 0;
+        $minute = 0;
+        $seconde = 0;
+
+        if($fullInterval > 86399){
+            $jour = intval($fullInterval / 86400);
+            $fullInterval = ($fullInterval-(86400*$jour));
+        }
+
+        if($fullInterval > 3599){
+            $heur = intval($fullInterval / 3600);
+            $fullInterval = ($fullInterval-(3600*$heur));
+        }
+
+        if($fullInterval > 59){
+            $minute = intval($fullInterval / 60);
+            $fullInterval = ($fullInterval-(60*$minute));
+        }
+        $seconde = $fullInterval;
+
+        $timeDHMS = ['jour'=>$jour,'heur'=>$heur,'minute'=>$minute,'seconde'=>$seconde];
+
+        return $timeDHMS;
     }
 
     /**
@@ -86,28 +143,62 @@ class TimerController extends AbstractController
         $idTeam,
         $idProject)
     {
-        $timer = new Timer();
+        $checkTeam = 0;
+        $currentUser = $this->getUser();
+        $currentTeam = $this->teamRepository->find(['id' => $idTeam]);
+        if($currentTeam != null){
+            $users = $currentTeam->getUsers();
+        }else{
+            $this->addFlash('alert', "groupe inexistant");
+            return $this->redirectToRoute('timer-team');
+        }
+        
+        foreach ($users as $user){
+            if($currentUser->getId() == $user->getId()){
+                $checkTeam = true;
+            }
+        }
 
-        $curentUser = $this->getUser();
-        $curentUserId = $curentUser->getId();
-        $timer->setUser($curentUserId);
-        $timer->setTeam($idTeam);
-        $timer->setProject($idProject);
-        $datetimeNow = new \DateTime();
-        $datetimeNow->modify('+2 hour');
-        $timer->setDateStart($datetimeNow);
+        $checkProject = 0;
+        $currentProject= $this->projectRepository->find(['id' => $idProject]);
+        if($currentProject != null){
+            $groups = $currentProject->getTeam();
+        }else{
+            $this->addFlash('alert', "projet inexistant");
+            return $this->redirectToRoute('timer-group', [
+                'idTeam' => $idTeam,
+            ]);
+        }
+        
+        foreach ($groups as $group){
+            if($currentProject->getId() == $group->getId()){
+                $checkProject = true;
+            }
+        }
 
-        $token = uniqid();
-        $timer->setToken($token);
+        if($checkProject == true &&  $checkTeam == true && $currentUser != null){
+            $timer = new Timer();
+            $curentUser = $this->getUser();
+            $curentUserId = $curentUser->getId();
+            $timer->setUser($curentUserId);
+            $timer->setTeam($idTeam);
+            $timer->setProject($idProject);
+            $datetimeNow = new \DateTime();
+            $datetimeNow->modify('+2 hour');
+            $timer->setDateStart($datetimeNow);
 
-        $session = new Session();
-        $session->set('tokenTimer', $token);
+            $token = uniqid();
+            $timer->setToken($token);
 
-        $entityManager->persist($timer);
-        $entityManager->flush();
-        $this->addFlash('success', "L'enregristrement du temps de travail a débuté");
+            $session = new Session();
+            $session->set('tokenTimer', $token);
 
-        return $this->render('timer/startAndStop.html.twig');
+            $entityManager->persist($timer);
+            $entityManager->flush();
+            $this->addFlash('success', "L'enregristrement du temps de travail a débuté");
+
+            return $this->render('timer/startAndStop.html.twig');
+        }
     }
 
     /**
@@ -142,22 +233,28 @@ class TimerController extends AbstractController
      */
     public function listTeam()
     {
-        $currentUser = $this->getUser();
-        $currentUserId = $currentUser->getId();
-        $teams = $this->teamRepository->findAll();
-        $tArray = [];
-        foreach ($teams as $team) {
-            $users = $team->getUsers();
-            foreach ($users as $user){
-                if ($user->getId() == $currentUserId){
-                    $tArray[] = $team;
+        if ($this->getUser() != null){
+            $currentUser = $this->getUser();
+            $currentUserId = $currentUser->getId();
+            $teams = $this->teamRepository->findAll();
+            $tArray = [];
+            foreach ($teams as $team) {
+                $users = $team->getUsers();
+                foreach ($users as $user){
+                    if ($user->getId() == $currentUserId){
+                        $tArray[] = $team;
+                    }
                 }
             }
-        }
 
-        return $this->render('timer/listTeam.html.twig', [
-            'tArray' => $tArray
-        ]);
+            return $this->render('timer/listTeam.html.twig', [
+                'tArray' => $tArray
+            ]);
+
+        }else{
+            $this->addFlash('alert', "Votre devez vous connecter");
+            return $this->redirectToRoute('home');
+        }
     }
 
     /**
@@ -165,22 +262,44 @@ class TimerController extends AbstractController
      */
     public function listGroup($idTeam)
     {
+        
+        $checkTeam = 0;
         $currentUser = $this->getUser();
-        $currentUserId = $currentUser->getId();
-        $projects = $this->projectRepository->findAll();
-        $gArray = [];
-        foreach ($projects as $project) {
-            $team = $project->getTeam();
-            foreach ($team as $t){
-                if ($t->getId() == $idTeam){
-                    $gArray[] = $project;
-                }
+        $currentTeam = $this->teamRepository->find(['id' => $idTeam]);
+        if($currentTeam != null){
+            $users = $currentTeam->getUsers();
+        }else{
+            $this->addFlash('alert', "groupe inexistant");
+            return $this->redirectToRoute('timer-team');
+        }
+        
+        foreach ($users as $user){
+            if($currentUser->getId() == $user->getId()){
+                $checkTeam = true;
             }
         }
 
-        return $this->render('timer/listGroup.html.twig', [
-            'gArray' => $gArray,
-            'idTeam' => $idTeam
-        ]);
+        if($currentUser != null && $checkTeam == true){
+            $currentUserId = $currentUser->getId();
+            $projects = $this->projectRepository->findAll();
+            $gArray = [];
+            foreach ($projects as $project) {
+                $team = $project->getTeam();
+                foreach ($team as $t){
+                    if ($t->getId() == $idTeam){
+                        $gArray[] = $project;
+                    }
+                }
+            }
+
+            return $this->render('timer/listGroup.html.twig', [
+                'gArray' => $gArray,
+                'idTeam' => $idTeam
+            ]);
+        }else{
+            $this->addFlash('alert', "mauvais compte");
+            return $this->redirectToRoute('timer-team');
+        }
+        
     }
 }
