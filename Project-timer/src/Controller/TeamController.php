@@ -98,4 +98,18 @@ class TeamController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/team_delete/{idTeam}", name="team_delete")
+     */
+    public function deleteTeam(EntityManagerInterface $entityManager,
+    $idTeam)
+    {
+        $team = $this->teamRepository->find(['id' => $idTeam]);
+        $entityManager->remove($team);
+        $entityManager->flush();
+        $this->addFlash('danger', "Cette équipe a bien été supprimé");
+
+        return $this->redirectToRoute('team');
+    }
 }
