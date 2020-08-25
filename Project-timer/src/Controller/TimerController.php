@@ -220,7 +220,7 @@ class TimerController extends AbstractController
         $entityManager->persist($timer);
         $entityManager->flush();
         $session->remove('tokenTimer');
-        $this->addFlash('success', "Votre temps de travail a été enregistrer");
+        $this->addFlash('success', "Votre temps de travail a été enregistrer !");
 
         return $this->redirectToRoute('timer', [
             'idTeam' => $idTeam,

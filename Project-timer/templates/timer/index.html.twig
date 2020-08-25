@@ -1,23 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Start Timer{% endblock %}
+
+{% block title %}Démarrer un nouveau timer{% endblock %}
 
 {% block head %} {% endblock %}
 
 {% block body %}
     {% include 'layout/navbar.html.twig'%}
-
-<!--
-<div class="example-wrapper">
-    <ul>
-        <li>temps globale du {{ project.name }} : {{ projectTime.jour }}:{{ projectTime.heur }}:{{ projectTime.minute }}:{{ projectTime.seconde }} [JOUR:HEUR:MINUTE:SECONDE]</li>
-        <li>temps passé par la {{ team.name }} sur le {{ project.name }}: {{ projectTeamTime.jour }}:{{ projectTeamTime.heur }}:{{ projectTeamTime.minute }}:{{ projectTeamTime.seconde }}[JOUR:HEUR:MINUTE:SECONDE]</li>
-        <li>temps passé par {{ user.firstName }} {{ user.lastName }} sur le {{ project.name }}: {{ projectUserTime.jour }}:{{ projectUserTime.heur }}:{{ projectUserTime.minute }}:{{ projectUserTime.seconde }} [JOUR:HEUR:MINUTE:SECONDE]</li>
-    </ul>
-    <a href="{{ path('timer-start',{idTeam: team.id, idProject: project.id}) }}">Démarrer un nouveau timer</a>
-</div>
--->
-
 <div class = "container">
 
     <table class = "table table-bordered" style = "text-align:center; margin-top:100px;">
@@ -46,5 +35,5 @@
     </div>
 
 </div>
-   
+
 {% endblock %}

@@ -50,15 +50,13 @@ class TeamController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $curentUser = $this->getUser(); 
-            $curentUserId = $curentUser->getId();
-            $team->setTeamAdmin($curentUserId);
-            $team->addUser($curentUser);
-            dump($team);
+            $team->setTeamAdmin($this->getUser()->getId());
+            $team->addUser($this->getUser());
+            dump($team); 
 
             $entityManager->persist($team);
             $entityManager->flush();
-            $this->addFlash('success', "The user has been created");
+            $this->addFlash('success', "L'équipe a bien été créer !");
 
             return $this->redirectToRoute('team');
 
@@ -90,7 +88,7 @@ class TeamController extends AbstractController
 
             $entityManager->persist($team);
             $entityManager->flush();
-            $this->addFlash('success', "The user has been updated");
+            $this->addFlash('success', "L'équipe a bien été modifier !");
 
             return $this->redirectToRoute('team');
 
@@ -99,5 +97,19 @@ class TeamController extends AbstractController
         return $this->render('team/edit.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/team_delete/{idTeam}", name="team_delete")
+     */
+    public function deleteTeam(EntityManagerInterface $entityManager,
+    $idTeam)
+    {
+        $team = $this->teamRepository->find(['id' => $idTeam]);
+        $entityManager->remove($team);
+        $entityManager->flush();
+        $this->addFlash('danger', "Cette équipe a bien été supprimé");
+
+        return $this->redirectToRoute('team');
     }
 }
