@@ -35,11 +35,15 @@ class TimerController extends AbstractController
     {
         $checkTeam = 0;
         $currentUser = $this->getUser();
+        if($currentUser == null){
+            $this->addFlash('danger', "Vous devez vous connecter !");
+            return $this->redirectToRoute('home');
+        }
         $currentTeam = $this->teamRepository->find(['id' => $idTeam]);
         if($currentTeam != null){
             $users = $currentTeam->getUsers();
         }else{
-            $this->addFlash('alert', "groupe inexistant");
+            $this->addFlash('danger', "groupe inexistant");
             return $this->redirectToRoute('timer-team');
         }
         
@@ -252,7 +256,7 @@ class TimerController extends AbstractController
             ]);
 
         }else{
-            $this->addFlash('alert', "Votre devez vous connecter");
+            $this->addFlash('danger', "Votre devez vous connecter !");
             return $this->redirectToRoute('home');
         }
     }

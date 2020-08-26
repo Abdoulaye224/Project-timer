@@ -34,7 +34,8 @@
                 {% endif %}
                     <td>
                         {% if projet.getProjectAdmin == app.user.id %}
-                            <a href="{{ path('project_edit',{idProject: projet.id}) }}" class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                            <a title="Modifier le projet" href="{{ path('project_edit',{idProject: projet.id}) }}" class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                            <a title ="Supprimer le projet" href="{{ path('project_delete',{idProject: projet.id}) }}" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
                         {% else %}
                             Impossible, vous n'êtes pas l'administateur du groupe.
                         {% endif %}

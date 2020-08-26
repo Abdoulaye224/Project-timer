@@ -30,14 +30,21 @@ class UserController extends AbstractController
     }
     /**
      * @Route("/user_list", name="user_list")
-     * @IsGranted("ROLE_USER")
      */
     public function index()
     {
         $userList = $this->userRepository->findAll();
-        return $this->render('user/index.html.twig', [
-            'user_list' => $userList,
-        ]);
+        $currentUser = $this->getUser();
+        if($currentUser == null){
+            return $this->redirectToRoute('home');
+        }
+        else{
+            return $this->render('user/index.html.twig', [
+                'user_list' => $userList,
+            ]);
+        }
+
+        
     }
 
     /**
@@ -99,64 +106,72 @@ class UserController extends AbstractController
      */
     public function delete(user $user, EntityManagerInterface $entityManager)
     {
-        $groups =  $this->entityManager->getRepository(Team::class)->findAll();
-        $projects =  $this->entityManager->getRepository(Project::class)->findAll();
 
-        /*foreach($groups as $group){
-            if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) > 1 ){
-                $group->removeUser($user);
-                $group->setTeamAdmin($group->getUsers()[2]->getId());
-                $entityManager->persist($group);
-            }
-            if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ){
-                $entityManager->remove($group);
-            }
-        }*/
-
-        foreach($projects as $project){
-            foreach($groups as $group){
-                if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ) {
-                    $entityManager->remove($group);
-                }
-            }
-            if($user->getId() == $project->getProjectAdmin() && count($project->getTeam()) > 1 ){
-                foreach($groups as $group){
-                    if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) > 1 ){
-                        $group->removeUser($user);
-                        if ($group->getUsers()[1] != null)
-                            $group->setTeamAdmin($group->getUsers()[1]->getId());
-                        else
-                            $group->setTeamAdmin($group->getUsers()[0]->getId());
-                        $entityManager->persist($group);
-                    }
-                }
-                foreach($project->getTeam() as $projectTeam){
-                    if ($projectTeam->getUsers()[1] != null){
-                        $project->setProjectAdmin($projectTeam->getUsers()[1]->getId());
-                    } else {
-                        $project->setProjectAdmin($projectTeam->getUsers()[0]->getId());
-                    }
-                }
-
-            }
-
-            if($user->getId() == $project->getProjectAdmin() && count($project->getTeam()) == 1 ){
-                if ($project->getTeam()[0]->getUsers()[1] != null){
-                    $project->setProjectAdmin($project->getTeam()[0]->getUsers()[1]->getId());
-                } else {
-                    $project->setProjectAdmin($project->getTeam()[0]->getUsers()[0]->getId());
-                }
-                /*$entityManager->remove($project);*/
-            }
-            $entityManager->persist($project);
+        $currentUser = $this->getUser();
+        if($currentUser == null){
+            return $this->redirectToRoute('home');
         }
 
-        $entityManager->remove($user);
-        $entityManager->flush();
+        else{
+            $groups =  $this->entityManager->getRepository(Team::class)->findAll();
+            $projects =  $this->entityManager->getRepository(Project::class)->findAll();
 
-        $this->addFlash('danger', "Votre compte a bien été supprimer !");
+            /*foreach($groups as $group){
+                if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) > 1 ){
+                    $group->removeUser($user);
+                    $group->setTeamAdmin($group->getUsers()[2]->getId());
+                    $entityManager->persist($group);
+                }
+                if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ){
+                    $entityManager->remove($group);
+                }
+            }*/
 
-        return $this->redirectToRoute('home');
+            foreach($projects as $project){
+                foreach($groups as $group){
+                    if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ) {
+                        $entityManager->remove($group);
+                    }
+                }
+                if($user->getId() == $project->getProjectAdmin() && count($project->getTeam()) > 1 ){
+                    foreach($groups as $group){
+                        if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) > 1 ){
+                            $group->removeUser($user);
+                            if ($group->getUsers()[1] != null)
+                                $group->setTeamAdmin($group->getUsers()[1]->getId());
+                            else
+                                $group->setTeamAdmin($group->getUsers()[0]->getId());
+                            $entityManager->persist($group);
+                        }
+                    }
+                    foreach($project->getTeam() as $projectTeam){
+                        if ($projectTeam->getUsers()[1] != null){
+                            $project->setProjectAdmin($projectTeam->getUsers()[1]->getId());
+                        } else {
+                            $project->setProjectAdmin($projectTeam->getUsers()[0]->getId());
+                        }
+                    }
+
+                }
+
+                if($user->getId() == $project->getProjectAdmin() && count($project->getTeam()) == 1 ){
+                    if ($project->getTeam()[0]->getUsers()[1] != null){
+                        $project->setProjectAdmin($project->getTeam()[0]->getUsers()[1]->getId());
+                    } else {
+                        $project->setProjectAdmin($project->getTeam()[0]->getUsers()[0]->getId());
+                    }
+                    /*$entityManager->remove($project);*/
+                }
+                $entityManager->persist($project);
+            }
+
+            $entityManager->remove($user);
+            $entityManager->flush();
+
+            $this->addFlash('danger', "Votre compte a bien été supprimer !");
+
+            return $this->redirectToRoute('home');
+        }
     }
 
 }
