@@ -1,6 +1,4 @@
 version: '3.6'
-name: Deploy to Heroku Using Docker
-uses: mtsmachado8/heroku-deploy@v2.0.3
 
 services:
     db:
