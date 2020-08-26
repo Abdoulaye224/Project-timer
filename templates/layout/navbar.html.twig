@@ -1,0 +1,59 @@
+{% block body %}
+
+   <link href="{{ asset('css/timer.css') }}" type="text/css" rel="stylesheet">
+   
+    <nav class="navbar navbar-expand-lg">
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <div class = "tog"></div>
+          <div class = "tog espace"></div>
+          <div class = "tog espace"></div>
+        </button>
+
+        <ul class="navbar-nav ml-auto connexion-two" >
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <li class="nav-item">
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline-danger">Déconnexion</a>
+            {% else %}
+                    <a href="{{ path('home') }}" class="btn btn-outline-success account">Connexion</a>
+            {% endif %}
+                </li>
+        </ul>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto menu">
+                <li class="nav-item">
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        {% if is_granted('ROLE_USER') %}
+                            <a href="{{ path('profile') }}" class="host">Mon Profil</a>
+                        {% endif %}
+                    {% endif %}
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('user_list') }}" class="host">Utilisateurs</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('team') }}" class="host">Groupes</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('project') }}" class="host">Projets</a>
+                </li>
+                 <li class="nav-item">
+                    <a href="{{ path('timer-team') }}" class="host">Timer</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto connexion-one" >
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <li class="nav-item">
+                        <a href="{{ path('app_logout') }}" class="btn btn-outline-danger">Déconnexion</a>
+                {% else %}
+                        <a href="{{ path('home') }}" class="btn btn-outline-success account">Connexion</a>
+                {% endif %}
+                    </li>
+            </ul>
+        </div>
+        
+    </nav>
+
+
+{% endblock %}
