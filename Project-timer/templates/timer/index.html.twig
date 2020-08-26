@@ -1,23 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Start Timer{% endblock %}
+
+{% block title %}Démarrer un nouveau timer{% endblock %}
 
 {% block head %} {% endblock %}
 
 {% block body %}
     {% include 'layout/navbar.html.twig'%}
-
-<!--
-<div class="example-wrapper">
-    <ul>
-        <li>temps globale du {{ project.name }} : {{ projectTime }} [JOUR:HEUR:MINUTE:SECONDE]</li>
-        <li>temps passé par la {{ team.name }} sur le {{ project.name }}: {{ projectTeamTime }} [JOUR:HEUR:MINUTE:SECONDE]</li>
-        <li>temps passé par {{ user.firstName }} {{ user.lastName }} sur le {{ project.name }}: {{ projectUserTime }} [JOUR:HEUR:MINUTE:SECONDE]</li>
-    </ul>
-    <a href="{{ path('timer-start',{idTeam: team.id, idProject: project.id}) }}">Démarrer un nouveau timer</a>
-</div>
--->
-
 <div class = "container">
 
     <table class = "table table-bordered" style = "text-align:center; margin-top:100px;">
@@ -27,15 +16,15 @@
             </tr>
             <tr>
                 <td>Votre temps passé sur le projet</td>
-                <td> {{ projectUserTime }} </td>
+                <td> {{ projectUserTime.jour }} J : {{ projectUserTime.heur }} H : {{ projectUserTime.minute }} min : {{ projectUserTime.seconde }} s  </td>
             </tr>
             <tr>
                 <td>Temps passé par le groupe {{ team.name }}</td>
-                <td> {{ projectTeamTime }} </td>
+                <td> {{ projectTeamTime.jour }} J : {{ projectTeamTime.heur }} H : {{ projectTeamTime.minute }} min : {{ projectTeamTime.seconde }} s </td>
             </tr>
             <tr style="background-color: yellow;">
                 <td><strong>Temps Global</strong></td>
-                <td><strong>{{ projectTime }}</strong></td>
+                <td><strong>{{ projectTime.jour }} J : {{ projectTime.heur }} H : {{ projectTime.minute }} min : {{ projectTime.seconde }} s</strong></td>
             </tr>
     </table>
     <br>

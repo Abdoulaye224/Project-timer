@@ -1,45 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello Project Controller!{% endblock %}
+{% block title %}Liste des projets{% endblock %}
 
 {% block body %}
 
-     {% include 'layout/navbar.html.twig'%}
+    {% include 'layout/navbar.html.twig'%}
 
     <div class="container">
-    <h1  style="margin-top: 20px; text-align: center;">Liste des projets</h1>
-    <a style= "margin-top: 10px; margin-bottom: 5px;" href="{{ path('project-create') }}" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> Créer un projet</a>
-
-            <table class="table table-bordered" style="text-align: center;">
-                <thead class="thead-dark">
-                    <tr>
-                        <th> Nom </th>
-                        <th> Description </th>
-                        <th> Groupe(s) </th>
-                        <th> Modifier </th>
-                    </tr>
-                </thead>
+        <h1  style="margin-top: 20px; text-align: center;">Liste des projets</h1>
+        <a style= "margin-top: 10px; margin-bottom: 5px;" href="{{ path('project-create') }}" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> Créer un projet</a>
+        <table class="table table-bordered" style="text-align: center;">
+            <thead class="thead-dark">
+                <tr>
+                    <th> Nom </th>
+                    <th> Description </th>
+                    <th> Groupe(s) </th>
+                    <th> Modifier </th>
+                </tr>
+            </thead>
             {# légèrement différent de php avec foreach userList as user #}
             {% for projet in projet_list %}
                 <tr>
-                <td style="vertical-align:middle;">{{ projet.name }} </td>
-                <td style="vertical-align:middle;">{{ projet.description }} </td>
+                    <td style="vertical-align:middle;">{{ projet.name }} </td>
+                    <td style="vertical-align:middle;">{{ projet.description }} </td>
                 {% if projet.getTeam is not empty %}
                     <td style="vertical-align:middle;">  
                     {% for team in projet.getTeam %}
                         {{team.name}} ,
                     {% endfor %}
                     </td>
+                {% else %}
+                    <td style="vertical-align: middle;">Aucun groupe n'appartient au projet</td>
                 {% endif %}
                     <td>
                         {% if projet.getProjectAdmin == app.user.id %}
-                            <a href="{{ path('project_edit',{idProject: projet.id}) }}" class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                            <a title="Modifier le projet" href="{{ path('project_edit',{idProject: projet.id}) }}" class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                            <a title ="Supprimer le projet" href="{{ path('project_delete',{idProject: projet.id}) }}" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
                         {% else %}
                             Impossible, vous n'êtes pas l'administateur du groupe.
                         {% endif %}
                     </td>
                 </tr>
             {% endfor %}
-            </table>
+        </table>
     </div>
 {% endblock %}
