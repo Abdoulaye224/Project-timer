@@ -42,7 +42,7 @@ class TeamType extends AbstractType
             'multiple' => true, 
             'label' => "Membres",
         ]);
-        $builder->add('save', SubmitType::class, ['attr' => ['class' => "btn btn-success"]]);
+        $builder->add('Valider', SubmitType::class, ['attr' => ['class' => "btn btn-success"]]);
         
     }
 

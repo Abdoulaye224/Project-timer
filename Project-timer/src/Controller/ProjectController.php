@@ -55,7 +55,7 @@ class ProjectController extends AbstractController
 
             $entityManager->persist($project);
             $entityManager->flush();
-            $this->addFlash('success', "The user has been created");
+            $this->addFlash('success', "Le projet a bien été créer !");
 
             return $this->redirectToRoute('project');
 
@@ -86,7 +86,7 @@ class ProjectController extends AbstractController
 
             $entityManager->persist($project);
             $entityManager->flush();
-            $this->addFlash('success', "The user has been updated");
+            $this->addFlash('success', "Le projet a bien été modifier !");
 
             return $this->redirectToRoute('project');
 
