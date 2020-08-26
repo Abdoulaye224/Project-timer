@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Repository\TeamRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,10 +32,16 @@ class TeamController extends AbstractController
     public function index()
     {
         $teamList = $this->teamRepository->findAll();
-        return $this->render('team/index.html.twig', [
-            'controller_name' => 'Team Controller',
-            'team_list' => $teamList
-        ]);
+        $currentUser = $this->getUser();
+        if($currentUser == null){
+            return $this->redirectToRoute('home');
+        }
+        else{
+            return $this->render('team/index.html.twig', [
+                'controller_name' => 'Team Controller',
+                'team_list' => $teamList
+            ]);
+        }
     }
 
     /**
@@ -44,27 +51,39 @@ class TeamController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager)
     {
-        $team = new Team();
-        $form = $this->createForm(TeamType::class, $team);
-        $form->handleRequest($request);
+        $currentUser = $this->getUser();
+        if($currentUser == null){
+            return $this->redirectToRoute('home');
+        }
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        else{
+            $team = new Team();
+            $form = $this->createForm(TeamType::class, $team);
+            $form->handleRequest($request);
 
-            $team->setTeamAdmin($this->getUser()->getId());
-            $team->addUser($this->getUser());
-            dump($team); 
+        
 
-            $entityManager->persist($team);
-            $entityManager->flush();
-            $this->addFlash('success', "L'équipe a bien été créer !");
+                if ($form->isSubmitted() && $form->isValid()) {
 
-            return $this->redirectToRoute('team');
+                    $team->setTeamAdmin($this->getUser()->getId());
+                    $team->addUser($this->getUser());
+                    dump($team); 
+
+                    $entityManager->persist($team);
+                    $entityManager->flush();
+                    $this->addFlash('success', "L'équipe a bien été créer !");
+
+                    return $this->redirectToRoute('team');
+
+                }
+
+                return $this->render('team/new.html.twig', [
+                    'form' => $form->createView(),
+                ]);
 
         }
 
-        return $this->render('team/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        
     }
 
     /**
@@ -75,28 +94,45 @@ class TeamController extends AbstractController
         EntityManagerInterface $entityManager,
         $idTeam)
     {
-        $team = $this->teamRepository->find(['id' => $idTeam]);
-        $form = $this->createForm(TeamType::class, $team);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $curentUser = $this->getUser(); 
-            $curentUserId = $curentUser->getId();
-            $team->setTeamAdmin($curentUserId);
-            $team->addUser($curentUser);
-
-            $entityManager->persist($team);
-            $entityManager->flush();
-            $this->addFlash('success', "L'équipe a bien été modifier !");
-
-            return $this->redirectToRoute('team');
-
+        $currentUser = $this->getUser();
+        if($currentUser == null){
+            return $this->redirectToRoute('home');
         }
 
-        return $this->render('team/edit.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        else{
+            $group =  $this->entityManager->getRepository(Team::class)->findBy(['id'=>$idTeam]);
+           
+            if($group == []){
+                return $this->redirectToRoute('team');
+            }
+            else{
+                if ($currentUser->getId() != $group[0]->getTeamAdmin() ) {
+                    return $this->redirectToRoute('team');
+                }
+            }
+                         
+            $team = $this->teamRepository->find(['id' => $idTeam]);
+            $form = $this->createForm(TeamType::class, $team);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $curentUser = $this->getUser(); 
+                $curentUserId = $curentUser->getId();
+                $team->setTeamAdmin($curentUserId);
+                $team->addUser($curentUser);
+                $entityManager->persist($team);
+                $entityManager->flush();
+                $this->addFlash('success', "L'équipe a bien été modifier !");
+                return $this->redirectToRoute('team');
+
+            }
+
+            return $this->render('team/edit.html.twig', [
+                'form' => $form->createView(),
+            ]);
+        }
+
+        
     }
 
     /**
@@ -105,11 +141,29 @@ class TeamController extends AbstractController
     public function deleteTeam(EntityManagerInterface $entityManager,
     $idTeam)
     {
-        $team = $this->teamRepository->find(['id' => $idTeam]);
-        $entityManager->remove($team);
-        $entityManager->flush();
-        $this->addFlash('danger', "Cette équipe a bien été supprimé");
+        $currentUser = $this->getUser();
+        if($currentUser == null){
+            return $this->redirectToRoute('home');
+        }
 
-        return $this->redirectToRoute('team');
+        else{
+            $group =  $this->entityManager->getRepository(Team::class)->findBy(['id'=>$idTeam]);
+           
+            if($group == []){
+                return $this->redirectToRoute('team');
+            }
+            else{
+                if ($currentUser->getId() != $group[0]->getTeamAdmin() ) {
+                    return $this->redirectToRoute('team');
+                }
+            }
+            
+            $team = $this->teamRepository->find(['id' => $idTeam]);
+            $entityManager->remove($team);
+            $entityManager->flush();
+            $this->addFlash('danger', "Cette équipe a bien été supprimé");
+    
+            return $this->redirectToRoute('team');
+        }        
     }
 }
