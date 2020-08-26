@@ -21,7 +21,7 @@ stop:
 
 .PHONY: migrations
 migrations:
-	@echo "Mise en place de la base de données..."
+	@echo "Mise en place de la base de donnees..."
 	docker-compose exec web php bin/console doctrine:migration:migrate "--no-interaction"
 	@echo "La base de donness est prete, vous pouvez à présent creer des donnees"
 	@echo "OU generer des jeux de donnees"
@@ -30,7 +30,13 @@ migrations:
 fixtures: ##Mise en place des jeux de données
 	@echo "Mise en place des jeux de données..."
 	docker-compose exec web php bin/console doctrine:fixtures:load  "--no-interaction"
-	@echo "Bravo !!! vous avez crée des jeux de données"
+	@echo "Bravo !!! vous avez cree des jeux de donnees"
+
+.PHONY: commit
+commit:
+	git add Makefile
+	git commit -m "edit Makefile"
+	git push origin develop
 
 .PHONY: containers
 containers:
