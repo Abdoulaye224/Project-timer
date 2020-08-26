@@ -17,7 +17,7 @@ class AppFixtures extends Fixture
     {
         // $product = new Product();
         // $manager->persist($product);
-        $faker = Faker::create();
+        $faker = Faker::create('fr_FR');
 
         // on créé 10 users
         for ($i = 0; $i < 6; $i++) {
@@ -55,7 +55,6 @@ class AppFixtures extends Fixture
             $entry->setProject($project->getId());
             $manager->persist($entry);
             $manager->flush();
-
 
         }
 
