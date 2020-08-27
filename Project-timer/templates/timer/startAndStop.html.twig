@@ -5,21 +5,29 @@
 {% block head %} {% endblock %}
 
 {% block body %}
+
+    <!-- Ajout de la barre de navigation contenant le fichier CSS -->
     {% include 'layout/navbar.html.twig'%}
 
     <main role="main" class="container">
 
         <h1 style="text-align: center; margin-top: 20px; margin-bottom: 70px;">Chronomètre</h1>
 
+        <!-- Affichage du chronomètre -->
         <div class="timer">
                 <time>00:00:00</time>
         </div>
+
         <br>
+
+        <!-- Bouton permettant de stopper le chronomètre -->
         <div class ="stop">
             <a href="{{ path('timer_stop') }}" class="btn btn-danger btn-stop"><i class="fa fa-stop" aria-hidden="true"></i> Stop</a>
         </div>
+
     </main>
 
+    <!-- Script permettant d'animer le chronomètre --> 
     <script>
         var timerDiv = document.getElementsByClassName('timer')[0],
             seconds = 0, minutes = 0, hours = 0,
@@ -48,4 +56,5 @@
         timer();
         
     </script>
+
 {% endblock %}

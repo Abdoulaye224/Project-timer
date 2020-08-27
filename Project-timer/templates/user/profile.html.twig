@@ -6,6 +6,7 @@
 
 {% block body %}
 
+    <!-- Ajout de la barre de navigation contenant le fichier CSS -->
     {% include 'layout/navbar.html.twig'%}
 
     {% for message in app.flashes('notice') %}
@@ -15,46 +16,56 @@
     {% endfor %}
 
     <div class = "profil">
+
+        <!-- Informations du profil de l'utilisateur -->
         <div class = "information">
             <h3 style = "margin-bottom: 10px;"> Informations détaillées </h3>
             <li>Nom: {{ user.lastName|upper }}</li>
             <li>Prénom: {{ user.firstName }}</li>
             <li>Email: {{ user.email }}</li>
+            
+            <!-- Bouton permettant de modifier le profil -->
             <button id = "button" class = "btn btn-primary">Modifier le profil</button>
+
+            <!-- Bouton permettant de supprimer le profil -->
             <a id = "buttonDelete" class="btn btn-danger" href="{{ path('user_delete', {'id': user.id}) }}" style="padding-top: auto; margin-top: 20px; margin-left: 2px">Supprimer mon compte</a>
+
         </div>
+
+        <!-- Formulaire d'édition -->
         <div id = "modify">
             {{ form(form) }}
         </div>
+
     </div>
 
-<script>
 
-    var button = document.getElementById("button");
-    var deletebtn = document.getElementById("buttonDelete");
-    var modify = document.getElementById("modify");
-    let hidden = true;
+    <!-- Script permettant d'afficher le formulaire d'édition en appuyant sur le bouton "Modifier le profil" -->
+    <script>
 
-        modify.style.display="none";
-                button.addEventListener('click', () => {
-                if(hidden){
-                    modify.style.display="block";
-                    // deletebtn.style.display="none";
-                    modify.style.width="70%";
-                    button.textContent="Annuler la modification";
-                    hidden = false;
-                }
-                else {
-                    button.textContent="Modifier le profil"
-                    //  deletebtn.style.display="block";
-                        modify.style.display="none";
-            hidden = true;
+        var button = document.getElementById("button");
+        var deletebtn = document.getElementById("buttonDelete");
+        var modify = document.getElementById("modify");
+        let hidden = true;
 
-    }
-                });
+            modify.style.display="none";
+                    button.addEventListener('click', () => {
+                    if(hidden){
+                        modify.style.display="block";
+                        modify.style.width="70%";
+                        button.textContent="Annuler la modification";
+                        hidden = false;
+                    }
+                    else {
+                        button.textContent="Modifier le profil"
+                            modify.style.display="none";
+                hidden = true;
+
+        }
+                    });
 
 
-</script>     
+    </script>     
         
         
 
