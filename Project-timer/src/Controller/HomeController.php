@@ -26,36 +26,29 @@ class HomeController extends AbstractController
     EntityManagerInterface $entityManager,
     UserPasswordEncoderInterface $passwordEncoder)
     {
-            // récupérer l'erreur de connexion si il y a
-            $error = $authenticationUtils->getLastAuthenticationError();
-            // dernier email entré par l'utilisateur
-            $lastUsername = $authenticationUtils->getLastUsername();
+        // récupérer l'erreur de connexion si il y a
+        $error = $authenticationUtils->getLastAuthenticationError();
+        // dernier email entré par l'utilisateur
+        $lastUsername = $authenticationUtils->getLastUsername();
 
-             $user = new User();
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
 
-            $form = $this->createForm(UserType::class, $user);
+        if ($form->isSubmitted() && $form->isValid()) {
 
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
+            $password = $passwordEncoder->encodePassword($user, $user->getPassword());
+            $user->setPassword($password);
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $this->addFlash('success', "Votre compte a été créer, vous pouvez vous connecter !");
+        }
 
-                $password = $passwordEncoder->encodePassword($user, $user->getPassword());
-                $user->setPassword($password);
-
-                $entityManager->persist($user);
-
-                $entityManager->flush();
-                //$request->getSession()->getFlashBag()->add();
-                $this->addFlash('success', "Votre compte a été créer, vous pouvez vous connecter !");
-
-            }
-            return $this->render('home/index.html.twig', [
-                'last_username' => $lastUsername,
-                'error' => $error,
-                'form' => $form->createView(),
-
-            ]);
-
-
+        return $this->render('home/index.html.twig', [
+            'last_username' => $lastUsername,
+            'error' => $error,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -66,19 +59,16 @@ class HomeController extends AbstractController
     {
         $user = $this->getUser();
         $form = $this->createForm(UserProfileType::class, $user);
+        $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid()) {
 
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-             $password = $passwordEncoder->encodePassword($user, $user->getPassword());
-
+            $password = $passwordEncoder->encodePassword($user, $user->getPassword());
             $user->setPassword($password);
-
             $entityManager->persist($user);
             $entityManager->flush();
 
             return $this->redirectToRoute('profile');
-
         }
 
         return $this->render('user/profile.html.twig', [

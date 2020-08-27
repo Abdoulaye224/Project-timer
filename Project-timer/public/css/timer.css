@@ -1,11 +1,3 @@
-/*GENERAL*/
-
-td{
-    vertical-align: middle;
-}
-
-/********/
-
 /*NAVBAR*/
 
 .navbar {
@@ -52,8 +44,6 @@ nav a {
 
 
 /*HOMEPAGE*/
-
-
 
 #general {
     display: flex; 
@@ -159,9 +149,8 @@ font-family: 'Lato', sans-serif;
     margin-top : 20px;
 }
 
-
-
 /*******/
+
 
 /*TIMER*/
 
