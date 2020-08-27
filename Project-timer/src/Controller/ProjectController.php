@@ -25,21 +25,17 @@ class ProjectController extends AbstractController
     }
     /**
      * @Route("/project", name="project")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function index()
     {
         $projectList = $this->ProjectRepository->findAll();
         $currentUser = $this->getUser();
-        if($currentUser == null){
-            return $this->redirectToRoute('home');
-        }
-
-        else{
-            return $this->render('project/index.html.twig', [
-                'controller_name' => 'ProjectController',
-                'projet_list' => $projectList
-            ]);
-        }
+        
+        return $this->render('project/index.html.twig', [
+            'controller_name' => 'ProjectController',
+            'projet_list' => $projectList
+        ]);
     }
 
     /**
@@ -51,37 +47,30 @@ class ProjectController extends AbstractController
         EntityManagerInterface $entityManager)
     {
         $currentUser = $this->getUser();
-        if($currentUser == null){
-            return $this->redirectToRoute('home');
+        $project = new Project();
+        $form = $this->createForm(ProjectType::class, $project);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $curentUser = $this->getUser(); 
+            $curentUserId = $curentUser->getId();
+            $project->setProjectAdmin($curentUserId);
+            $entityManager->persist($project);
+            $entityManager->flush();
+            $this->addFlash('success', "Le projet a bien été créer !");
+
+            return $this->redirectToRoute('project');
         }
-        else{
-            $project = new Project();
-            $form = $this->createForm(ProjectType::class, $project);
-            $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-
-                $curentUser = $this->getUser(); 
-                $curentUserId = $curentUser->getId();
-                $project->setProjectAdmin($curentUserId);
-                dump($project);
-
-                $entityManager->persist($project);
-                $entityManager->flush();
-                $this->addFlash('success', "Le projet a bien été créer !");
-
-                return $this->redirectToRoute('project');
-
-            }
-
-            return $this->render('project/new.html.twig', [
-                'form' => $form->createView(),
-            ]);
-        }
+        return $this->render('project/new.html.twig', [
+            'form' => $form->createView(),
+        ]);   
     }
 
     /**
      * @Route("/project_edit/{idProject}", name="project_edit")
+     * @IsGranted("ROLE_USER")
      */
     public function editAction(
         Request $request,
@@ -89,75 +78,72 @@ class ProjectController extends AbstractController
         $idProject)
     {
         $currentUser = $this->getUser();
-        if($currentUser == null){
-            return $this->redirectToRoute('home');
-        }
+        $proj =  $this->entityManager->getRepository(Project::class)->findBy(['id'=>$idProject]);
+        
+        if($proj == []){
+            //si le projet n'existe pas
 
+            return $this->redirectToRoute('project');
+        }
         else{
-
-            $proj =  $this->entityManager->getRepository(Project::class)->findBy(['id'=>$idProject]);
-           
-            if($proj == []){
-                return $this->redirectToRoute('project');
-            }
-            else{
-                if ($currentUser->getId() != $proj[0]->getProjectAdmin() ) {
-                    return $this->redirectToRoute('project');
-                }
-            }
-
-            $project = $this->ProjectRepository->find(['id' => $idProject]);
-            $form = $this->createForm(ProjectType::class, $project);
-            $form->handleRequest($request);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-
-                $curentUser = $this->getUser(); 
-                $curentUserId = $curentUser->getId();
-                $project->setProjectAdmin($curentUserId);
-
-                $entityManager->persist($project);
-                $entityManager->flush();
-                $this->addFlash('success', "Le projet a bien été modifier !");
+            //si l'utilisateur n'est pas l'administrateur
+            if ($currentUser->getId() != $proj[0]->getProjectAdmin() ) {
 
                 return $this->redirectToRoute('project');
-
             }
-
-            return $this->render('project/edit.html.twig', [
-                'form' => $form->createView(),
-            ]);
         }
+
+        $project = $this->ProjectRepository->find(['id' => $idProject]);
+        $form = $this->createForm(ProjectType::class, $project);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $curentUser = $this->getUser(); 
+            $curentUserId = $curentUser->getId();
+            $project->setProjectAdmin($curentUserId);
+            $entityManager->persist($project);
+            $entityManager->flush();
+            $this->addFlash('success', "Le projet a bien été modifier !");
+
+            return $this->redirectToRoute('project');
+
+        }
+
+        return $this->render('project/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
+        
     }
 
     /**
      * @Route("/project_delete/{idProject}", name="project_delete")
+     * @IsGranted("ROLE_USER")
      */
     public function deleteTeam(EntityManagerInterface $entityManager,
     $idProject)
     {
         $currentUser = $this->getUser();
-        if($currentUser == null){
-            return $this->redirectToRoute('home');
+        $proj =  $this->entityManager->getRepository(Project::class)->findBy(['id'=>$idProject]);
+        
+        if($proj == []){
+            //si le projet n'existe pas
+
+            return $this->redirectToRoute('project');
         }
         else{
+            //si l'utilisateur n'est pas l'administrateur
+            if ($currentUser->getId() != $proj[0]->getProjectAdmin() ) {
 
-            $proj =  $this->entityManager->getRepository(Project::class)->findBy(['id'=>$idProject]);
-           
-            if($proj == []){
                 return $this->redirectToRoute('project');
             }
-            else{
-                if ($currentUser->getId() != $proj[0]->getProjectAdmin() ) {
-                    return $this->redirectToRoute('project');
-                }
-            }
+        }
 
-            $project = $this->ProjectRepository->find(['id' => $idProject]);
-            $entityManager->remove($project);
-            $entityManager->flush();
+        $project = $this->ProjectRepository->find(['id' => $idProject]);
+        $entityManager->remove($project);
+        $entityManager->flush();
     
-            return $this->redirectToRoute('project');
-        }        
+        return $this->redirectToRoute('project');
+              
     }
 }
