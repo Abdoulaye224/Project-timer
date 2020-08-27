@@ -1,10 +1,10 @@
 ## About the app
-project-timer is an application for managing the time spent by a user on a given project. This user can belong to one or more groups, and each group can have one or more different projects.
+Project-timer is an application for managing the time spent by a user on a given project. This user can belong to one or more groups, and each group can have one or more different projects.
 We let you discover the application. 
 
 ## Getting started
 
-This repository holds project-timer code.
+This repository holds Project-timer code.
 In order to run the project you will need to check your local machine requirements.
 
 ### Requirements
@@ -22,10 +22,10 @@ You will need to install docker and Makefile.
 # Go to the root of the project and enter this command to start the application:
   docker-compose up --build
 
-# Type this command then to create all the tables necessary for the proper functioning of the application in the mysql database
+# Then to create all the tables necessary for the proper functioning of the application in the mysql database type this command:
   docker-compose exec web php bin/console doctrine:migrations:migrate
 
-# Here is the command to execute to create false data (Data Fixtures) in order to be able to test the application
+# Here is the command to execute to create false data (Data Fixtures) in order to be able to test the application:
   docker-compose exec web php bin/console doctrine:fixtures:load
 ```
 
@@ -40,20 +40,20 @@ docker-compose exec web php bin/console app:create-admin-user <email> <password>
 ### For those whose installation of Makefile went well
 ***
 
-* For start application
+* To start the application
 ```
     $ make start
 ```
-* For stop application
+* To stop the application
 ```
     $ make stop    
 ```
 
-* For load différents entity to database
+* To load differents entities to database
 ```   
     $ make migrations 
 ```
-* For generate a data fixtures for your tests
+* To generate a data fixtures for your tests
 ```
     $ make fixtures 
 ```
