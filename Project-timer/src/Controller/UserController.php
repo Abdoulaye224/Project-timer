@@ -48,15 +48,6 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/login", name="login")
-
-    public function log()
-    {
-        $userList = $this->userRepository->findAll();
-        return $this->render('security/login.html.twig');
-    }*/
-
-    /**
      * @Route("/user_create", name="user_create")
      */
     public function newAction(
@@ -73,15 +64,10 @@ class UserController extends AbstractController
 
             $password = $passwordEncoder->encodePassword($user, $user->getPassword());
             $user->setPassword($password);
-
             $entityManager->persist($user);
-
             $entityManager->flush();
-           // $this->addFlash('success', "The user has been created");
-
-        //    return $this->redirectToRoute('login');
-
         }
+
         return $this->render('user/new.html.twig', [
             'form' => $form->createView(),
         ]);
@@ -109,23 +95,11 @@ class UserController extends AbstractController
 
         $currentUser = $this->getUser();
         if($currentUser == null){
-            return $this->redirectToRoute('home');
-        }
 
-        else{
+            return $this->redirectToRoute('home');
+        }else{
             $groups =  $this->entityManager->getRepository(Team::class)->findAll();
             $projects =  $this->entityManager->getRepository(Project::class)->findAll();
-
-            /*foreach($groups as $group){
-                if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) > 1 ){
-                    $group->removeUser($user);
-                    $group->setTeamAdmin($group->getUsers()[2]->getId());
-                    $entityManager->persist($group);
-                }
-                if($user->getId() == $group->getTeamAdmin() && count($group->getUsers()) <= 1 ){
-                    $entityManager->remove($group);
-                }
-            }*/
 
             foreach($projects as $project){
                 foreach($groups as $group){
@@ -153,21 +127,18 @@ class UserController extends AbstractController
                     }
 
                 }
-
                 if($user->getId() == $project->getProjectAdmin() && count($project->getTeam()) == 1 ){
                     if ($project->getTeam()[0]->getUsers()[1] != null){
                         $project->setProjectAdmin($project->getTeam()[0]->getUsers()[1]->getId());
                     } else {
                         $project->setProjectAdmin($project->getTeam()[0]->getUsers()[0]->getId());
                     }
-                    /*$entityManager->remove($project);*/
                 }
                 $entityManager->persist($project);
             }
 
             $entityManager->remove($user);
             $entityManager->flush();
-
             $this->addFlash('danger', "Votre compte a bien été supprimer !");
 
             return $this->redirectToRoute('home');

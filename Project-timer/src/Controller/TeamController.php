@@ -46,48 +46,36 @@ class TeamController extends AbstractController
 
     /**
      * @Route("/team_create", name="team-create")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function newAction(
         Request $request,
         EntityManagerInterface $entityManager)
     {
         $currentUser = $this->getUser();
-        if($currentUser == null){
-            return $this->redirectToRoute('home');
+        $team = new Team();
+        $form = $this->createForm(TeamType::class, $team);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $team->setTeamAdmin($this->getUser()->getId());
+            $team->addUser($this->getUser());
+            $entityManager->persist($team);
+            $entityManager->flush();
+            $this->addFlash('success', "L'équipe a bien été créer !");
+
+            return $this->redirectToRoute('team');
         }
 
-        else{
-            $team = new Team();
-            $form = $this->createForm(TeamType::class, $team);
-            $form->handleRequest($request);
-
-        
-
-                if ($form->isSubmitted() && $form->isValid()) {
-
-                    $team->setTeamAdmin($this->getUser()->getId());
-                    $team->addUser($this->getUser());
-                    dump($team); 
-
-                    $entityManager->persist($team);
-                    $entityManager->flush();
-                    $this->addFlash('success', "L'équipe a bien été créer !");
-
-                    return $this->redirectToRoute('team');
-
-                }
-
-                return $this->render('team/new.html.twig', [
-                    'form' => $form->createView(),
-                ]);
-
-        }
-
-        
+        return $this->render('team/new.html.twig', [
+            'form' => $form->createView(),
+        ]);    
     }
 
     /**
      * @Route("/team_edit/{idTeam}", name="team_edit")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function editAction(
         Request $request,
@@ -95,75 +83,69 @@ class TeamController extends AbstractController
         $idTeam)
     {
         $currentUser = $this->getUser();
-        if($currentUser == null){
-            return $this->redirectToRoute('home');
-        }
+        $group =  $this->entityManager->getRepository(Team::class)->findBy(['id'=>$idTeam]);
 
+        if($group == []){
+            //si le groupe n'existe pas
+            return $this->redirectToRoute('team');
+        }
         else{
-            $group =  $this->entityManager->getRepository(Team::class)->findBy(['id'=>$idTeam]);
-           
-            if($group == []){
+            //vérification de l'administrateur du group pour la modifiation
+            if ($currentUser->getId() != $group[0]->getTeamAdmin() ) {
+
                 return $this->redirectToRoute('team');
             }
-            else{
-                if ($currentUser->getId() != $group[0]->getTeamAdmin() ) {
-                    return $this->redirectToRoute('team');
-                }
-            }
-                         
-            $team = $this->teamRepository->find(['id' => $idTeam]);
-            $form = $this->createForm(TeamType::class, $team);
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
+        }
+                     
+        $team = $this->teamRepository->find(['id' => $idTeam]);
+        $form = $this->createForm(TeamType::class, $team);
+        $form->handleRequest($request);
 
-                $curentUser = $this->getUser(); 
-                $curentUserId = $curentUser->getId();
-                $team->setTeamAdmin($curentUserId);
-                $team->addUser($curentUser);
-                $entityManager->persist($team);
-                $entityManager->flush();
-                $this->addFlash('success', "L'équipe a bien été modifier !");
-                return $this->redirectToRoute('team');
+        if ($form->isSubmitted() && $form->isValid()) {
+            //modification du group
+            $curentUser = $this->getUser(); 
+            $curentUserId = $curentUser->getId();
+            $team->setTeamAdmin($curentUserId);
+            $team->addUser($curentUser);
+            $entityManager->persist($team);
+            $entityManager->flush();
+            $this->addFlash('success', "L'équipe a bien été modifier !");
 
-            }
-
-            return $this->render('team/edit.html.twig', [
-                'form' => $form->createView(),
-            ]);
+            return $this->redirectToRoute('team');
         }
 
-        
+        return $this->render('team/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);  
     }
 
     /**
      * @Route("/team_delete/{idTeam}", name="team_delete")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function deleteTeam(EntityManagerInterface $entityManager,
     $idTeam)
     {
         $currentUser = $this->getUser();
-        if($currentUser == null){
-            return $this->redirectToRoute('home');
-        }
+        $group =  $this->entityManager->getRepository(Team::class)->findBy(['id'=>$idTeam]);
 
+        if($group == []){
+            //si le groupe n'existe pas
+            return $this->redirectToRoute('team');
+        }
         else{
-            $group =  $this->entityManager->getRepository(Team::class)->findBy(['id'=>$idTeam]);
-           
-            if($group == []){
+            //vérification de l'administrateur du group pour la supression
+            if ($currentUser->getId() != $group[0]->getTeamAdmin() ) {
+
                 return $this->redirectToRoute('team');
             }
-            else{
-                if ($currentUser->getId() != $group[0]->getTeamAdmin() ) {
-                    return $this->redirectToRoute('team');
-                }
-            }
-            
-            $team = $this->teamRepository->find(['id' => $idTeam]);
-            $entityManager->remove($team);
-            $entityManager->flush();
-            $this->addFlash('danger', "Cette équipe a bien été supprimé");
+        }
+        //supression du group
+        $team = $this->teamRepository->find(['id' => $idTeam]);
+        $entityManager->remove($team);
+        $entityManager->flush();
+        $this->addFlash('danger', "Cette équipe a bien été supprimé");
     
-            return $this->redirectToRoute('team');
-        }        
+        return $this->redirectToRoute('team');       
     }
 }
