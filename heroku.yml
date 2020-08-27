@@ -2,4 +2,4 @@ build:
   docker:
     web: Project-timer/.docker/php/Dockerfile
 run:
-  web: bundle exec docker-compose.yml
+  web: bundle exec docker-compose up
